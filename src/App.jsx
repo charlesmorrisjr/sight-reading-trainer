@@ -5,10 +5,8 @@ import abcjs from "abcjs";
 
 import generateAbc from './musicGenerator';
 
-const ABC_NOTATION_TEMPLATE = "X:1\nK:D\nDD AA|BBA2|\n";
-
 function App() {
-  const [abcNotation, setAbcNotation] = useState(ABC_NOTATION_TEMPLATE);
+  const [abcNotation, setAbcNotation] = useState(generateAbc());
   const sheetMusicRenderRef = useRef(null);
     
   // Update the rendered sheet music every time the ABC notation changes
