@@ -13,6 +13,9 @@ function App() {
     
   // Update the rendered sheet music every time the ABC notation changes
   useEffect(() => {
+    // Guard clause in case sheetMusicRenderRef is not defined
+    if (!sheetMusicRenderRef.current) return;
+
     abcjs.renderAbc(sheetMusicRenderRef.current, abcNotation);
     
     console.log(abcNotation); // Debug
