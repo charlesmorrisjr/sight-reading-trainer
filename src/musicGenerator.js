@@ -8,9 +8,13 @@ const sheetMusicSettings = {
   maxRange: "G5",
 }
 
+function determineNotesPerMeasure() {
+  // Convert time signature to determine number of notes per measure
+  return parseInt(sheetMusicSettings.timeSignature.split("/")[0]);
+}
+
 function generateRandomNote() {
   // Generate a random note from A to G
-  
   let randomNoteIndex = Math.floor(Math.random() * 7);
 
   return String.fromCharCode(UPPERCASE_ASCII_START + randomNoteIndex);
@@ -19,12 +23,17 @@ function generateRandomNote() {
 function generateAbc() {
   // Generate a new ABC notation for the sheet music
   
-  // Set staff designation and key
-  let newAbcNotation = `X:1\nK:${sheetMusicSettings.keySignature}\n`;
+  // Get notes per measure and total notes in music
+  let notesPerMeasure = determineNotesPerMeasure();
+  let totalNotes = notesPerMeasure * sheetMusicSettings.measures;
   
-  for (let i = 0; i < 12; i++) {
-    // Add a measure bar every 4 notes
-    if (i > 0 && i % 4 === 0) newAbcNotation += "|"; 
+  // Set staff designation, key signature, and time signature
+  let newAbcNotation = `X:1\nK:${sheetMusicSettings.keySignature}\n`;
+  newAbcNotation += `M:${sheetMusicSettings.timeSignature}\n`;
+  
+  for (let i = 0; i < totalNotes; i++) {
+    // Add a measure bar every [notesPerMeasure] notes
+    if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
     newAbcNotation += generateRandomNote();
   }
