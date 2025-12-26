@@ -1,11 +1,16 @@
-const UPPERCASE_ASCII_START = 65;
+import pianoNoteToAbc from './data/pianoNoteToAbc.json';
 
 const sheetMusicSettings = {
   measures: 4,
   keySignature: "C",
   timeSignature: "4/4",
   minRange: "C4",
-  maxRange: "G5",
+  maxRange: "F5",
+}
+
+function getNoteIndex(noteName) {
+  // Get index of note in pianoNoteToAbc lookup table
+  return pianoNoteToAbc.findIndex(note => note.name === noteName);
 }
 
 function determineNotesPerMeasure() {
@@ -14,10 +19,13 @@ function determineNotesPerMeasure() {
 }
 
 function generateRandomNote() {
-  // Generate a random note from A to G
-  let randomNoteIndex = Math.floor(Math.random() * 7);
+  // Determine range between min and max notes
+  let noteRange = getNoteIndex(sheetMusicSettings.maxRange) - getNoteIndex(sheetMusicSettings.minRange) + 1;
+  
+  // Select random note
+  let randomNoteIndex = Math.floor(Math.random() * noteRange) + getNoteIndex(sheetMusicSettings.minRange);
 
-  return String.fromCharCode(UPPERCASE_ASCII_START + randomNoteIndex);
+  return pianoNoteToAbc[randomNoteIndex].abc;
 }
 
 function generateAbc() {
