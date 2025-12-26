@@ -10,7 +10,7 @@ function App() {
   return (
     <>
       <h1>Sight Reading Trainer</h1>
-      <SheetMusic abcNotation={abcNotation}/>
+      <SheetMusic abcNotation={abcNotation} />
       <button className="button" onClick={() => setAbcNotation(generateAbc())}>Generate New Exercise</button>
     </>
   )

@@ -1,5 +1,13 @@
 const UPPERCASE_ASCII_START = 65;
 
+const sheetMusicSettings = {
+  measures: 4,
+  keySignature: "C",
+  timeSignature: "4/4",
+  minRange: "C4",
+  maxRange: "G5",
+}
+
 function generateRandomNote() {
   // Generate a random note from A to G
   
@@ -12,7 +20,7 @@ function generateAbc() {
   // Generate a new ABC notation for the sheet music
   
   // Set staff designation and key
-  let newAbcNotation = "X:1\nK:D\n";
+  let newAbcNotation = `X:1\nK:${sheetMusicSettings.keySignature}\n`;
   
   for (let i = 0; i < 12; i++) {
     // Add a measure bar every 4 notes

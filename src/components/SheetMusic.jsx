@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import './App.css'
 
 import abcjs from "abcjs";
 
