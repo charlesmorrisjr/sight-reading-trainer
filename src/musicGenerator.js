@@ -38,6 +38,12 @@ function generateAbc() {
   // Set staff designation, key signature, and time signature
   let newAbcNotation = `X:1\nK:${sheetMusicSettings.keySignature}\n`;
   newAbcNotation += `M:${sheetMusicSettings.timeSignature}\n`;
+
+  // Directive to assign treble and bass clefs/voices
+  newAbcNotation += "%%score { 1 | 2 }\nV:1 clef=treble\nV:2 clef=bass\n";
+  
+  // Voice 1 (treble)
+  newAbcNotation += "[V:1] ";
   
   for (let i = 0; i < totalNotes; i++) {
     // Add a measure bar every [notesPerMeasure] notes
@@ -46,7 +52,19 @@ function generateAbc() {
     newAbcNotation += generateRandomNote();
   }
 
-  newAbcNotation += "|";  // Add ending bar
+  newAbcNotation += "|\n";  // Add ending bar
+
+  // Voice 2 (bass)
+  newAbcNotation += "[V:2] ";
+  
+  for (let i = 0; i < totalNotes; i++) {
+    // Add a measure bar every [notesPerMeasure] notes
+    if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
+
+    newAbcNotation += generateRandomNote() + ',';
+  }
+
+  newAbcNotation += "|\n";  // Add ending bar
 
   return newAbcNotation;
 }
