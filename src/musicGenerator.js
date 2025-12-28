@@ -6,6 +6,12 @@ const sheetMusicSettings = {
   timeSignature: "4/4",
   minRange: "C4",
   maxRange: "F5",
+  createNote: {
+    whole: false,
+    half: false,
+    quarter: true,
+    eighth: true,
+  }
 }
 
 function getNoteIndex(noteName) {
@@ -18,19 +24,31 @@ function determineNotesPerMeasure() {
   return parseInt(sheetMusicSettings.timeSignature.split("/")[0]);
 }
 
-function generateRandomNote() {
+function generateRandomNote(noteLengthOptions) {
   // Determine range between min and max notes
   let noteRange = getNoteIndex(sheetMusicSettings.maxRange) - getNoteIndex(sheetMusicSettings.minRange) + 1;
   
   // Select random note
   let randomNoteIndex = Math.floor(Math.random() * noteRange) + getNoteIndex(sheetMusicSettings.minRange);
 
-  return pianoNoteToAbc[randomNoteIndex].abc;
+  // Select note length
+  let newNoteLength = noteLengthOptions[Math.floor(Math.random() * noteLengthOptions.length)];
+  
+  return pianoNoteToAbc[randomNoteIndex].abc + newNoteLength;
 }
 
 function generateAbc() {
   // Generate a new ABC notation for the sheet music
   
+  // Length of note when generating (whole, half, etc.)
+  let noteLengthOptions = [];
+
+  // Note length is based on settings
+  if (sheetMusicSettings.createNote.whole) noteLengthOptions.push("8");
+  if (sheetMusicSettings.createNote.half) noteLengthOptions.push("4");
+  if (sheetMusicSettings.createNote.quarter) noteLengthOptions.push("2");
+  if (sheetMusicSettings.createNote.eighth) noteLengthOptions.push("");
+
   // Get notes per measure and total notes in music
   let notesPerMeasure = determineNotesPerMeasure();
   let totalNotes = notesPerMeasure * sheetMusicSettings.measures;
@@ -49,7 +67,7 @@ function generateAbc() {
     // Add a measure bar every [notesPerMeasure] notes
     if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
-    newAbcNotation += generateRandomNote();
+    newAbcNotation += generateRandomNote(noteLengthOptions);
   }
 
   newAbcNotation += "|\n";  // Add ending bar
@@ -61,7 +79,7 @@ function generateAbc() {
     // Add a measure bar every [notesPerMeasure] notes
     if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
-    newAbcNotation += generateRandomNote() + ',';
+    newAbcNotation += generateRandomNote(noteLengthOptions) + ',';
   }
 
   newAbcNotation += "|\n";  // Add ending bar
