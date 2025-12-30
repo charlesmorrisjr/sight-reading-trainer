@@ -49,6 +49,9 @@ function generateAbc() {
   if (sheetMusicSettings.createNote.quarter) noteLengthOptions.push("2");
   if (sheetMusicSettings.createNote.eighth) noteLengthOptions.push("");
 
+  // If no note length is selected, default to quarter notes
+  if (noteLengthOptions.length === 0) noteLengthOptions.push("2");
+
   // Get notes per measure and total notes in music
   let notesPerMeasure = determineNotesPerMeasure();
   let totalNotes = notesPerMeasure * sheetMusicSettings.measures;
