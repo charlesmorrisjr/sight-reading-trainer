@@ -24,10 +24,7 @@ function determineNotesPerMeasure() {
   return parseInt(sheetMusicSettings.timeSignature.split("/")[0]);
 }
 
-function generateRandomNote(noteLengthOptions) {
-  // Determine range between min and max notes
-  let noteRange = getNoteIndex(sheetMusicSettings.maxRange) - getNoteIndex(sheetMusicSettings.minRange) + 1;
-  
+function generateRandomNote(noteLengthOptions, noteRange) {
   // Select random note
   let randomNoteIndex = Math.floor(Math.random() * noteRange) + getNoteIndex(sheetMusicSettings.minRange);
 
@@ -42,6 +39,9 @@ function generateAbc() {
   
   // Length of note when generating (whole, half, etc.)
   let noteLengthOptions = [];
+
+  // Determine range between min and max notes
+  let noteRange = getNoteIndex(sheetMusicSettings.maxRange) - getNoteIndex(sheetMusicSettings.minRange) + 1;
 
   // Note length is based on settings
   if (sheetMusicSettings.createNote.whole) noteLengthOptions.push("8");
@@ -67,7 +67,7 @@ function generateAbc() {
     // Add a measure bar every [notesPerMeasure] notes
     if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
-    newAbcNotation += generateRandomNote(noteLengthOptions);
+    newAbcNotation += generateRandomNote(noteLengthOptions, noteRange);
   }
 
   newAbcNotation += "|\n";  // Add ending bar
@@ -79,7 +79,7 @@ function generateAbc() {
     // Add a measure bar every [notesPerMeasure] notes
     if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
-    newAbcNotation += generateRandomNote(noteLengthOptions) + ',';
+    newAbcNotation += generateRandomNote(noteLengthOptions, noteRange) + ',';
   }
 
   newAbcNotation += "|\n";  // Add ending bar
