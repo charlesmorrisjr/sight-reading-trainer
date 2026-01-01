@@ -1,5 +1,7 @@
 import pianoNoteToAbc from './data/pianoNoteToAbc.json';
 
+// TODO: Write pseudocode and explanation of how music generator works for future reference!
+
 const sheetMusicSettings = {
   measures: 4,
   keySignature: "C",
@@ -7,11 +9,35 @@ const sheetMusicSettings = {
   minRange: "C4",
   maxRange: "F5",
   createNote: {
-    whole: false,
-    half: false,
+    whole: true,
+    half: true,
     quarter: true,
     eighth: true,
   }
+}
+
+function convertStringNoteLengthToBeat(stringNoteLength) {
+  // Convert ABC note length string notation to a number.
+  // This is used for calculating the number of beats remaining when generating a measure.
+
+  if (stringNoteLength === "8") return 8;
+  if (stringNoteLength === "4") return 4;
+  if (stringNoteLength === "2") return 2;
+  if (stringNoteLength === "") return 1;
+}
+
+function generateAvailableNoteLengths(maxLength) {
+  // Generate all possible note lengths that can be inserted at the current beat based on the
+  // maximum number of beats still available in the measure
+
+  let availableNoteLengths = [];
+  
+  if (sheetMusicSettings.createNote.whole === true && maxLength >= 8) availableNoteLengths.push("8");
+  if (sheetMusicSettings.createNote.half === true && maxLength >= 4) availableNoteLengths.push("4");
+  if (sheetMusicSettings.createNote.quarter === true && maxLength >= 2) availableNoteLengths.push("2");
+  if (sheetMusicSettings.createNote.eighth === true && maxLength >= 1) availableNoteLengths.push("");
+
+  return availableNoteLengths;
 }
 
 function getNoteIndex(noteName) {
@@ -19,9 +45,9 @@ function getNoteIndex(noteName) {
   return pianoNoteToAbc.findIndex(note => note.name === noteName);
 }
 
-function determineNotesPerMeasure() {
-  // Convert time signature to determine number of notes per measure
-  return parseInt(sheetMusicSettings.timeSignature.split("/")[0]);
+function determineBeatsPerMeasure() {
+  // Convert time signature to determine number of beats per measure (eighth note is 1 beat)
+  return parseInt(sheetMusicSettings.timeSignature.split("/")[0]) * 2;
 }
 
 function generateRandomNote(noteLengthOptions, noteRange) {
@@ -30,31 +56,37 @@ function generateRandomNote(noteLengthOptions, noteRange) {
 
   // Select note length
   let newNoteLength = noteLengthOptions[Math.floor(Math.random() * noteLengthOptions.length)];
-  
-  return pianoNoteToAbc[randomNoteIndex].abc + newNoteLength;
+
+  return [pianoNoteToAbc[randomNoteIndex].abc + newNoteLength, newNoteLength];
 }
 
 function generateAbc() {
   // Generate a new ABC notation for the sheet music
   
   // Length of note when generating (whole, half, etc.)
-  let noteLengthOptions = [];
+  let noteLengthSettings = [];
 
   // Determine range between min and max notes
   let noteRange = getNoteIndex(sheetMusicSettings.maxRange) - getNoteIndex(sheetMusicSettings.minRange) + 1;
 
   // Note length is based on settings
-  if (sheetMusicSettings.createNote.whole) noteLengthOptions.push("8");
-  if (sheetMusicSettings.createNote.half) noteLengthOptions.push("4");
-  if (sheetMusicSettings.createNote.quarter) noteLengthOptions.push("2");
-  if (sheetMusicSettings.createNote.eighth) noteLengthOptions.push("");
+  if (sheetMusicSettings.createNote.whole) noteLengthSettings.push("8");
+  if (sheetMusicSettings.createNote.half) noteLengthSettings.push("4");
+  if (sheetMusicSettings.createNote.quarter) noteLengthSettings.push("2");
+  if (sheetMusicSettings.createNote.eighth) noteLengthSettings.push("");
 
   // If no note length is selected, default to quarter notes
-  if (noteLengthOptions.length === 0) noteLengthOptions.push("2");
+  if (noteLengthSettings.length === 0) noteLengthSettings.push("2");
 
   // Get notes per measure and total notes in music
-  let notesPerMeasure = determineNotesPerMeasure();
-  let totalNotes = notesPerMeasure * sheetMusicSettings.measures;
+  let beatsPerMeasure = determineBeatsPerMeasure();
+  let totalBeats = beatsPerMeasure * sheetMusicSettings.measures;
+  // Get total beats in music
+  // Add notes of varying beats until beats are complete
+
+  // Generate random note
+  // If total remaining length is less than random note length, set last note beat length to total and exit loop
+  // Subtract note beat length from total
   
   // Set staff designation, key signature, and time signature
   let newAbcNotation = `X:1\nK:${sheetMusicSettings.keySignature}\n`;
@@ -65,27 +97,64 @@ function generateAbc() {
   
   // Voice 1 (treble)
   newAbcNotation += "[V:1] ";
-  
-  for (let i = 0; i < totalNotes; i++) {
-    // Add a measure bar every [notesPerMeasure] notes
-    if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
-    newAbcNotation += generateRandomNote(noteLengthOptions, noteRange);
+  // Generate notes to fill each measure
+  for (let i = 0; i < sheetMusicSettings.measures; i++) {
+    let remainingBeatsInCurrentMeasure = beatsPerMeasure;
+    
+    // For each measure, fill with notes to use all required beats per measure
+    while (remainingBeatsInCurrentMeasure > 0) {
+      // Every iteration before a note is inserted, create an array containing the available
+      // note lengths we can use
+      let noteLengthOptions = [];
+
+      // If the numerator of the time signature contains 8 eighth notes
+      if (beatsPerMeasure === 8) {
+        // Check the number of remaining beats for the current measure and generate
+        // the possible note lengths we can insert at the current beat
+        if (remainingBeatsInCurrentMeasure === 8) {
+          noteLengthOptions = generateAvailableNoteLengths(8);
+        } else if (remainingBeatsInCurrentMeasure >= 4 && remainingBeatsInCurrentMeasure <= 7) {
+          noteLengthOptions = generateAvailableNoteLengths(4);
+        } else if (remainingBeatsInCurrentMeasure >= 2 && remainingBeatsInCurrentMeasure <= 3) {
+          noteLengthOptions = generateAvailableNoteLengths(2);
+        } else if (remainingBeatsInCurrentMeasure === 1) {
+          noteLengthOptions = generateAvailableNoteLengths(1);
+        }      
+      // Future beatsPerMeasure settings will be implemented later
+      } else {
+        return;
+      }
+
+      // Generate a random note at the current beat and retrieve the note and its length
+      let [newNote, newNoteLength] = generateRandomNote(noteLengthOptions, noteRange);
+      
+      // Update the remaining beats in the current measure
+      remainingBeatsInCurrentMeasure -= convertStringNoteLengthToBeat(newNoteLength);
+      
+      // Debug
+      console.log(newNote, newNoteLength, remainingBeatsInCurrentMeasure);
+
+      // Add the new note to the ABC notation
+      newAbcNotation += newNote + " ";
+    }
+    
+    newAbcNotation += "|";  // Add measure bar
   }
 
   newAbcNotation += "|\n";  // Add ending bar
 
   // Voice 2 (bass)
   newAbcNotation += "[V:2] ";
-  
-  for (let i = 0; i < totalNotes; i++) {
-    // Add a measure bar every [notesPerMeasure] notes
-    if (i > 0 && i % notesPerMeasure === 0) newAbcNotation += "|"; 
 
-    newAbcNotation += generateRandomNote(noteLengthOptions, noteRange) + ',';
+  // Generate notes to fill each measure
+  for (let i = 0; i < sheetMusicSettings.measures; i++) {
+    // Insert C major block chords for now.
+    // This will be chord progressions in the future.
+    newAbcNotation += "[C,8 E,8 G,8]";
+    
+    newAbcNotation += "|";  // Add measure bar
   }
-
-  newAbcNotation += "|\n";  // Add ending bar
 
   return newAbcNotation;
 }
