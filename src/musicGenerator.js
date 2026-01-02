@@ -3,7 +3,7 @@ import pianoNoteToAbc from './data/pianoNoteToAbc.json';
 // TODO: Write pseudocode and explanation of how music generator works for future reference!
 
 const sheetMusicSettings = {
-  measures: 4,
+  measures: 24,
   keySignature: "C",
   timeSignature: "4/4",
   minRange: "C4",
@@ -155,6 +155,8 @@ function generateAbc() {
     
     newAbcNotation += "|";  // Add measure bar
   }
+
+  newAbcNotation += "|\n";  // Add ending bar
 
   return newAbcNotation;
 }

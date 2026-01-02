@@ -11,7 +11,13 @@ export default function SheetMusic({ abcNotation }) {
     // Guard clause in case sheetMusicRenderRef is not defined
     if (!sheetMusicRenderRef.current) return;
 
-    abcjs.renderAbc(sheetMusicRenderRef.current, abcNotation);
+    abcjs.renderAbc(sheetMusicRenderRef.current, abcNotation, {
+      staffwidth: 740,
+      wrap: { minSpacing: 1.8, 
+              maxSpacing: 2.7, 
+              preferredMeasuresPerLine: 4 
+            }
+    });
     
     console.log(abcNotation); // Debug
   }, [abcNotation]);
