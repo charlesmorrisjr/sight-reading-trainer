@@ -133,7 +133,7 @@ function generateAbc() {
       remainingBeatsInCurrentMeasure -= convertStringNoteLengthToBeat(newNoteLength);
       
       // Debug
-      console.log(newNote, newNoteLength, remainingBeatsInCurrentMeasure);
+      // console.log(newNote, newNoteLength, remainingBeatsInCurrentMeasure);
 
       // Add the new note to the ABC notation
       newAbcNotation += newNote + " ";
