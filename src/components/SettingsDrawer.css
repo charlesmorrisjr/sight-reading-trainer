@@ -197,6 +197,165 @@
   }
 }
 
+/* Main menu button list */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 60px;
+  padding: 1rem 1.5rem;
+  background-color: #1a1a1a;
+  border: none;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu-button:hover {
+  background-color: #2a2a2a;
+}
+
+.menu-button:active {
+  background-color: #3a3a3a;
+}
+
+.menu-button:focus {
+  outline: 2px solid #646cff;
+  outline-offset: -2px;
+}
+
+.menu-chevron {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Submenu styles */
+.submenu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.submenu-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-button {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.87);
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.back-button:hover {
+  color: #646cff;
+}
+
+.back-button:focus {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.submenu-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.submenu-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.submenu-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 56px;
+  padding: 1rem 1.5rem;
+  background-color: #1a1a1a;
+  border: none;
+  color: rgba(255, 255, 255, 0.87);
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submenu-option:hover {
+  background-color: #2a2a2a;
+}
+
+.submenu-option:active {
+  background-color: #3a3a3a;
+}
+
+.submenu-option:focus {
+  outline: 2px solid #646cff;
+  outline-offset: -2px;
+}
+
+.submenu-option.selected {
+  background-color: #646cff;
+  color: white;
+}
+
+.submenu-option.toggle.active {
+  background-color: #2a4a2a;
+}
+
+.checkmark {
+  font-size: 1.2rem;
+  color: #4ade80;
+}
+
+.submenu-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.done-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #646cff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.done-button:hover {
+  background-color: #535bf2;
+}
+
+.done-button:focus {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+}
+
 /* Light mode support */
 @media (prefers-color-scheme: light) {
   .drawer {
@@ -217,23 +376,49 @@
     color: #646cff;
   }
 
-  .settings-section h3 {
+  .menu-list,
+  .submenu-content {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .menu-button,
+  .submenu-option {
+    background-color: #ffffff;
     color: #213547;
   }
 
-  .form-group label,
-  .checkbox-group legend {
-    color: #555;
+  .menu-button:hover,
+  .submenu-option:hover {
+    background-color: #f5f5f5;
   }
 
-  .form-group select,
-  .form-group input[type="number"] {
-    background-color: #f9f9f9;
-    color: #213547;
-    border-color: rgba(0, 0, 0, 0.2);
-  }
-
-  .helper-text {
+  .menu-chevron {
     color: rgba(0, 0, 0, 0.5);
+  }
+
+  .back-button {
+    color: #213547;
+  }
+
+  .back-button:hover {
+    color: #646cff;
+  }
+
+  .submenu-option.selected {
+    background-color: #646cff;
+    color: white;
+  }
+
+  .submenu-option.toggle.active {
+    background-color: #d4f4dd;
+    color: #213547;
+  }
+
+  .submenu-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .submenu-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
   }
 }

@@ -7,11 +7,14 @@ const KEY_SIGNATURES = [
   'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb'
 ];
 
-const TIME_SIGNATURES = ['4/4'];
-
 export default function SettingsDrawer({ isOpen, settings, onClose, onSettingsChange }) {
   const [localSettings, setLocalSettings] = useState(settings);
+  const [currentMenu, setCurrentMenu] = useState('main');
   const drawerRef = useRef(null);
+
+  // Navigation functions
+  const navigateToSubmenu = (submenu) => setCurrentMenu(submenu);
+  const navigateBack = () => setCurrentMenu('main');
 
   // Sync local state when external settings change
   useEffect(() => {
@@ -60,14 +63,6 @@ export default function SettingsDrawer({ isOpen, settings, onClose, onSettingsCh
     onSettingsChange(newSettings);
   };
 
-  // Handle measures input with validation
-  const handleMeasuresChange = (e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value) && value >= 1 && value <= 32) {
-      handleChange('measures', value);
-    }
-  };
-
   // Close drawer when clicking backdrop
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -100,20 +95,12 @@ export default function SettingsDrawer({ isOpen, settings, onClose, onSettingsCh
     };
   }, [isOpen]);
 
-  // Focus management - focus first input when drawer opens
+  // Focus management and menu reset when drawer opens
   useEffect(() => {
-    if (isOpen && drawerRef.current) {
-      const firstFocusable = drawerRef.current.querySelector('select, input, button');
-      firstFocusable?.focus();
+    if (isOpen) {
+      setCurrentMenu('main'); // Always show main menu when opening
     }
   }, [isOpen]);
-
-  // Generate note options for dropdowns
-  const noteOptions = pianoNoteData.map((note, index) => (
-    <option key={index} value={note.name}>
-      {note.name}
-    </option>
-  ));
 
   return (
     <div
@@ -140,122 +127,175 @@ export default function SettingsDrawer({ isOpen, settings, onClose, onSettingsCh
         </div>
 
         <div className="drawer-content">
-          <section className="settings-section">
-            <h3>Note Range</h3>
-            <div className="form-group">
-              <label htmlFor="minRange">Minimum Note</label>
-              <select
-                id="minRange"
-                value={localSettings.minRange}
-                onChange={(e) => handleChange('minRange', e.target.value)}
-                aria-label="Minimum note range"
-              >
-                {noteOptions}
-              </select>
+          {/* Main Menu */}
+          {currentMenu === 'main' && (
+            <div className="menu-list">
+              <button className="menu-button" onClick={() => navigateToSubmenu('minNote')}>
+                <span className="menu-label">Minimum Note</span>
+                <span className="menu-chevron">›</span>
+              </button>
+
+              <button className="menu-button" onClick={() => navigateToSubmenu('maxNote')}>
+                <span className="menu-label">Maximum Note</span>
+                <span className="menu-chevron">›</span>
+              </button>
+
+              <button className="menu-button" onClick={() => navigateToSubmenu('noteDurations')}>
+                <span className="menu-label">Note Durations</span>
+                <span className="menu-chevron">›</span>
+              </button>
+
+              <button className="menu-button" onClick={() => navigateToSubmenu('keySignature')}>
+                <span className="menu-label">Key Signature</span>
+                <span className="menu-chevron">›</span>
+              </button>
+
+              <button className="menu-button" onClick={() => navigateToSubmenu('measures')}>
+                <span className="menu-label">Number of Measures</span>
+                <span className="menu-chevron">›</span>
+              </button>
             </div>
-            <div className="form-group">
-              <label htmlFor="maxRange">Maximum Note</label>
-              <select
-                id="maxRange"
-                value={localSettings.maxRange}
-                onChange={(e) => handleChange('maxRange', e.target.value)}
-                aria-label="Maximum note range"
-              >
-                {noteOptions}
-              </select>
+          )}
+
+          {/* Min Note Submenu */}
+          {currentMenu === 'minNote' && (
+            <div className="submenu">
+              <div className="submenu-header">
+                <button className="back-button" onClick={navigateBack}>
+                  ‹ Back
+                </button>
+              </div>
+              <div className="submenu-content">
+                {pianoNoteData.map(note => (
+                  <button
+                    key={note.name}
+                    className={`submenu-option ${localSettings.minRange === note.name ? 'selected' : ''}`}
+                    onClick={() => {
+                      handleChange('minRange', note.name);
+                    }}
+                  >
+                    {note.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </section>
+          )}
 
-          <section className="settings-section">
-            <h3>Rhythm</h3>
-            <fieldset className="checkbox-group">
-              <legend>Note Types</legend>
-
-              <label>
-                <input
-                  type="checkbox"
-                  checked={localSettings.createNote.whole}
-                  onChange={(e) => handleNoteTypeChange('whole', e.target.checked)}
-                />
-                <span>Whole notes</span>
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  checked={localSettings.createNote.half}
-                  onChange={(e) => handleNoteTypeChange('half', e.target.checked)}
-                />
-                <span>Half notes</span>
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  checked={localSettings.createNote.quarter}
-                  onChange={(e) => handleNoteTypeChange('quarter', e.target.checked)}
-                />
-                <span>Quarter notes</span>
-              </label>
-
-              <label>
-                <input
-                  type="checkbox"
-                  checked={localSettings.createNote.eighth}
-                  onChange={(e) => handleNoteTypeChange('eighth', e.target.checked)}
-                />
-                <span>Eighth notes</span>
-              </label>
-            </fieldset>
-          </section>
-
-          <section className="settings-section">
-            <h3>Exercise Settings</h3>
-            <div className="form-group">
-              <label htmlFor="measures">Number of Measures</label>
-              <input
-                id="measures"
-                type="number"
-                min="1"
-                max="32"
-                value={localSettings.measures}
-                onChange={handleMeasuresChange}
-                aria-label="Number of measures"
-              />
+          {/* Max Note Submenu */}
+          {currentMenu === 'maxNote' && (
+            <div className="submenu">
+              <div className="submenu-header">
+                <button className="back-button" onClick={navigateBack}>
+                  ‹ Back
+                </button>
+              </div>
+              <div className="submenu-content">
+                {pianoNoteData.map(note => (
+                  <button
+                    key={note.name}
+                    className={`submenu-option ${localSettings.maxRange === note.name ? 'selected' : ''}`}
+                    onClick={() => {
+                      handleChange('maxRange', note.name);
+                    }}
+                  >
+                    {note.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </section>
+          )}
 
-          <section className="settings-section">
-            <h3>Key & Time</h3>
-            <div className="form-group">
-              <label htmlFor="keySignature">Key Signature</label>
-              <select
-                id="keySignature"
-                value={localSettings.keySignature}
-                onChange={(e) => handleChange('keySignature', e.target.value)}
-                aria-label="Key signature"
-              >
+          {/* Note Durations Submenu */}
+          {currentMenu === 'noteDurations' && (
+            <div className="submenu">
+              <div className="submenu-header">
+                <button className="back-button" onClick={navigateBack}>
+                  ‹ Back
+                </button>
+              </div>
+              <div className="submenu-content">
+                <button
+                  className={`submenu-option toggle ${localSettings.createNote.whole ? 'active' : ''}`}
+                  onClick={() => handleNoteTypeChange('whole', !localSettings.createNote.whole)}
+                >
+                  <span>Whole notes</span>
+                  {localSettings.createNote.whole && <span className="checkmark">✓</span>}
+                </button>
+
+                <button
+                  className={`submenu-option toggle ${localSettings.createNote.half ? 'active' : ''}`}
+                  onClick={() => handleNoteTypeChange('half', !localSettings.createNote.half)}
+                >
+                  <span>Half notes</span>
+                  {localSettings.createNote.half && <span className="checkmark">✓</span>}
+                </button>
+
+                <button
+                  className={`submenu-option toggle ${localSettings.createNote.quarter ? 'active' : ''}`}
+                  onClick={() => handleNoteTypeChange('quarter', !localSettings.createNote.quarter)}
+                >
+                  <span>Quarter notes</span>
+                  {localSettings.createNote.quarter && <span className="checkmark">✓</span>}
+                </button>
+
+                <button
+                  className={`submenu-option toggle ${localSettings.createNote.eighth ? 'active' : ''}`}
+                  onClick={() => handleNoteTypeChange('eighth', !localSettings.createNote.eighth)}
+                >
+                  <span>Eighth notes</span>
+                  {localSettings.createNote.eighth && <span className="checkmark">✓</span>}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Key Signature Submenu */}
+          {currentMenu === 'keySignature' && (
+            <div className="submenu">
+              <div className="submenu-header">
+                <button className="back-button" onClick={navigateBack}>
+                  ‹ Back
+                </button>
+              </div>
+              <div className="submenu-content">
                 {KEY_SIGNATURES.map(key => (
-                  <option key={key} value={key}>{key}</option>
+                  <button
+                    key={key}
+                    className={`submenu-option ${localSettings.keySignature === key ? 'selected' : ''}`}
+                    onClick={() => {
+                      handleChange('keySignature', key);
+                    }}
+                  >
+                    {key}
+                  </button>
                 ))}
-              </select>
+              </div>
             </div>
-            <div className="form-group">
-              <label htmlFor="timeSignature">Time Signature</label>
-              <select
-                id="timeSignature"
-                value={localSettings.timeSignature}
-                onChange={(e) => handleChange('timeSignature', e.target.value)}
-                disabled
-                aria-label="Time signature"
-              >
-                {TIME_SIGNATURES.map(time => (
-                  <option key={time} value={time}>{time}</option>
+          )}
+
+          {/* Measures Submenu */}
+          {currentMenu === 'measures' && (
+            <div className="submenu">
+              <div className="submenu-header">
+                <button className="back-button" onClick={navigateBack}>
+                  ‹ Back
+                </button>
+              </div>
+              <div className="submenu-content">
+                {[4, 8, 12, 16, 20, 24, 28, 32].map(num => (
+                  <button
+                    key={num}
+                    className={`submenu-option ${localSettings.measures === num ? 'selected' : ''}`}
+                    onClick={() => {
+                      handleChange('measures', num);
+                    }}
+                  >
+                    {num} measures
+                  </button>
                 ))}
-              </select>
-              <p className="helper-text">Currently only 4/4 time signature is supported</p>
+              </div>
             </div>
-          </section>
+          )}
         </div>
       </div>
     </div>
