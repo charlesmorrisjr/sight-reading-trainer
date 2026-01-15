@@ -1,68 +1,136 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* Tailwind directives */
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* Configure class-based dark mode for Tailwind v4 */
+@variant dark (&:is(.dark *));
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Tailwind v4 theme configuration with CSS custom properties */
+@theme {
+  /* Custom color palette */
+  --color-primary-50: #f0f4ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+  --color-primary-950: #1e1b4b;
+
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+
+  /* Custom box shadows */
+  --shadow-drawer: -4px 0 16px rgba(0, 0, 0, 0.1);
+  --shadow-drawer-dark: -4px 0 16px rgba(0, 0, 0, 0.5);
+
+  /* Custom spacing */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+
+  /* Custom min heights/widths */
+  --min-height-touch: 44px;
+  --min-height-menu-item: 56px;
+  --min-width-touch: 44px;
+
+  /* Custom max widths */
+  --max-width-container: 1280px;
+
+  /* Custom transitions */
+  --transition-duration-250: 250ms;
+  --transition-timing-function-drawer: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Font family */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
+/* Base layer customizations */
+@layer base {
+  /* Light mode default */
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a:hover {
-    color: #747bff;
+
+  body {
+    @apply min-h-screen flex items-center justify-center;
+    @apply min-w-[320px];
+    @apply bg-white text-neutral-900;
+    @apply font-sans leading-normal;
   }
-  button {
-    background-color: #f9f9f9;
+
+  /* Dark mode overrides */
+  html.dark body {
+    @apply bg-neutral-900 text-neutral-100;
+  }
+
+  /* Typography base */
+  h1 {
+    @apply text-5xl font-bold leading-tight;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold;
+  }
+
+  /* Link styles */
+  a {
+    @apply font-medium text-primary-600 no-underline;
+    @apply hover:text-primary-700 transition-colors duration-200;
+  }
+
+  .dark a {
+    @apply text-primary-400 hover:text-primary-300;
+  }
+}
+
+/* Component layer for reusable patterns */
+@layer components {
+  /* Button base styles - modernized */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium text-base;
+    @apply cursor-pointer transition-all duration-200;
+    @apply border border-transparent;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white;
+    @apply hover:bg-primary-700 hover:shadow-md;
+    @apply active:bg-primary-800;
+  }
+
+  .dark .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 active:bg-primary-700;
+  }
+
+  .btn-secondary {
+    @apply bg-neutral-100 text-neutral-900;
+    @apply hover:bg-neutral-200 hover:border-primary-400;
+  }
+
+  .dark .btn-secondary {
+    @apply bg-neutral-800 text-neutral-100;
+    @apply hover:bg-neutral-700 hover:border-primary-500;
+  }
+
+  /* Icon button base */
+  .btn-icon {
+    @apply p-2 rounded-lg bg-transparent border-none;
+    @apply transition-colors duration-200;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply cursor-pointer;
   }
 }

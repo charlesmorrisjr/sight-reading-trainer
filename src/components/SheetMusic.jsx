@@ -123,8 +123,6 @@ export default function SheetMusic({ abcNotation }) {
   }, [abcNotation, renderOptions]);
 
   return (
-    <>
-      <div ref={sheetMusicRenderRef}></div>
-    </>
+    <div ref={sheetMusicRenderRef}/>
   )
 }

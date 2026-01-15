@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 
 import generateAbc from './musicGenerator';
 
@@ -66,8 +65,9 @@ function App() {
   const handleGenerateNew = () => setAbcNotation(generateAbc(settings));
 
   return (
-    <>
-      <div className='header-menu'>
+    <div className="w-full max-w-container mx-auto px-8 py-12 text-center">
+      {/* Header with hamburger button */}
+      <div className="flex justify-end mb-12">
         <HamburgerButton
           isOpen={isDrawerOpen}
           onToggle={handleToggleDrawer}
@@ -75,18 +75,28 @@ function App() {
       </div>
 
       <h1>Sight Reading Trainer</h1>
-      <SheetMusic abcNotation={abcNotation} />
-      <button className="button" onClick={handleGenerateNew}>
+
+      {/* Sheet music display */}
+      <div className="mt-12 mb-24">
+        <SheetMusic abcNotation={abcNotation} />
+      </div>
+
+      {/* Generate button */}
+      <button
+        className="btn btn-primary shadow-lg hover:shadow-xl transition-shadow duration-200"
+        onClick={handleGenerateNew}
+      >
         Generate New Exercise
       </button>
 
+      {/* Settings drawer */}
       <SettingsDrawer
         isOpen={isDrawerOpen}
         settings={settings}
         onClose={handleCloseDrawer}
         onSettingsChange={handleSettingsChange}
       />
-    </>
+    </div>
   )
 }
 
