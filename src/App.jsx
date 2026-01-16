@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import generateAbc from './musicGenerator';
 
 import SheetMusic from './components/SheetMusic';
-import HamburgerButton from './components/HamburgerButton';
+import Header from './components/Header';
 import SettingsDrawer from './components/SettingsDrawer';
 
 function App() {
@@ -65,29 +65,30 @@ function App() {
   const handleGenerateNew = () => setAbcNotation(generateAbc(settings));
 
   return (
-    <div className="w-full max-w-container mx-auto px-8 py-12 text-center">
-      {/* Header with hamburger button */}
-      <div className="flex justify-end mb-12">
-        <HamburgerButton
-          isOpen={isDrawerOpen}
-          onToggle={handleToggleDrawer}
-        />
+    <>
+      {/* Header component - sticky at top */}
+      <Header
+        isDrawerOpen={isDrawerOpen}
+        onToggle={handleToggleDrawer}
+      />
+
+      {/* Main content container */}
+      <div className="w-full max-w-container mx-auto px-8 py-12 text-center">
+        <h1>Sight Reading Trainer</h1>
+
+        {/* Sheet music display */}
+        <div className="mt-12 mb-24">
+          <SheetMusic abcNotation={abcNotation} />
+        </div>
+
+        {/* Generate button */}
+        <button
+          className="btn btn-primary shadow-lg hover:shadow-xl transition-shadow duration-200"
+          onClick={handleGenerateNew}
+        >
+          Generate New Exercise
+        </button>
       </div>
-
-      <h1>Sight Reading Trainer</h1>
-
-      {/* Sheet music display */}
-      <div className="mt-12 mb-24">
-        <SheetMusic abcNotation={abcNotation} />
-      </div>
-
-      {/* Generate button */}
-      <button
-        className="btn btn-primary shadow-lg hover:shadow-xl transition-shadow duration-200"
-        onClick={handleGenerateNew}
-      >
-        Generate New Exercise
-      </button>
 
       {/* Settings drawer */}
       <SettingsDrawer
@@ -96,7 +97,7 @@ function App() {
         onClose={handleCloseDrawer}
         onSettingsChange={handleSettingsChange}
       />
-    </div>
+    </>
   )
 }
 

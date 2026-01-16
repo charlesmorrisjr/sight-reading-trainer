@@ -22,7 +22,7 @@ export default function HamburgerButton({ isOpen, onToggle }) {
       {/* Line 2 */}
       <div className={`
         w-7 h-[3px] rounded-full
-        bg-primary-600 dark:bg-primary-400
+        bg-neutral-900 dark:bg-primary-400
         transition-all duration-300 ease-out
         ${isOpen ? 'opacity-0' : 'opacity-100'}
       `} />
@@ -30,7 +30,7 @@ export default function HamburgerButton({ isOpen, onToggle }) {
       {/* Line 3 */}
       <div className={`
         w-7 h-[3px] rounded-full
-        bg-primary-600 dark:bg-primary-400
+        bg-neutral-900 dark:bg-primary-400
         transition-all duration-300 ease-out
         ${isOpen ? '-rotate-45 -translate-y-[9px]' : ''}
       `} />
