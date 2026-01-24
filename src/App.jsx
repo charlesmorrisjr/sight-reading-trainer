@@ -7,6 +7,15 @@ import Header from './components/Header';
 import SettingsDrawer from './components/SettingsDrawer';
 
 function App() {
+  // Theme state with localStorage and system preference initialization
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
   // Settings state with localStorage initialization
   const [settings, setSettings] = useState(() => {
     try {
@@ -58,18 +67,33 @@ function App() {
     setAbcNotation(generateAbc(settings));
   }, [settings]);
 
+  // Apply dark mode class to html element and persist to localStorage
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDarkMode]);
+
   // Handler functions
   const handleToggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const handleCloseDrawer = () => setIsDrawerOpen(false);
   const handleSettingsChange = (newSettings) => setSettings(newSettings);
   const handleGenerateNew = () => setAbcNotation(generateAbc(settings));
+  const handleToggleTheme = () => setIsDarkMode(!isDarkMode);
 
   return (
     <>
       {/* Header component - sticky at top */}
       <Header
         isDrawerOpen={isDrawerOpen}
-        onToggle={handleToggleDrawer}
+        onToggleDrawer={handleToggleDrawer}
+        isDarkMode={isDarkMode}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main content container */}

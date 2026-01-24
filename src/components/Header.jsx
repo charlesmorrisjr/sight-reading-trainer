@@ -1,8 +1,7 @@
 import HamburgerButton from './HamburgerButton';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import ThemeToggle from './ThemeToggle';
 
-export default function Header({ isDrawerOpen, onToggle }) {
+export default function Header({ isDrawerOpen, onToggleDrawer, isDarkMode, onToggleTheme }) {
   return (
     <header className="
       sticky top-0 z-50
@@ -16,10 +15,15 @@ export default function Header({ isDrawerOpen, onToggle }) {
         px-4 sm:px-8
         py-3 sm:py-4
         flex justify-end items-center
+        gap-2
       ">
+        <ThemeToggle
+          isDarkMode={isDarkMode}
+          onToggle={onToggleTheme}
+        />
         <HamburgerButton
           isOpen={isDrawerOpen}
-          onToggle={onToggle}
+          onToggle={onToggleDrawer}
         />
       </div>
     </header>
