@@ -60,3 +60,9 @@ I want to make my sheet music rendering. Responsive when the user changes the si
 - Metronome Toggle
 - Dark Mode Toggle
 - Play/Pause Button for audio playback of the sheet music
+
+
+## Patterns
+- Patterns for left and right hands that can be blocked together or practice individually
+  - Take popular patterns from piano music, including rhythms. These can be developed into exercises
+-
