@@ -7,7 +7,7 @@ export default function ThemeToggle({ isDarkMode, onToggle }) {
       className="
         btn-icon min-w-[44px] min-h-[44px]
         flex items-center justify-center
-        text-neutral-900 dark:text-primary-400
+        text-neutral-900 dark:text-yellow-400
         hover:bg-neutral-100 dark:hover:bg-neutral-800
         transition-colors duration-200
       "
